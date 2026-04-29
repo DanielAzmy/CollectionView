@@ -10,7 +10,12 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK: - Variables
-    private var images: [UIImage] = []
+    private let sections: [Sections] = [.banner, .grids]
+    private var images: [[UIImage]] = [
+           [UIImage(named: "1")!, UIImage(named: "2")!, UIImage(named: "3")!],
+           [UIImage(named: "4")!, UIImage(named: "5")!, UIImage(named: "1")!],
+           [UIImage(named: "2")!, UIImage(named: "3")!, UIImage(named: "4")!],
+       ]
 
     // MARK: - UI components
     private lazy var stackView: UIStackView = {
@@ -23,22 +28,15 @@ class ViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-       let tv = UITableView()
-        tv.dataSource = self
-        tv.delegate = self
-        return tv
-    }()
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionHeadersPinToVisibleBounds = true
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: makeLayout())
-        collectionView.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: CustomCollectionViewCell.identifier)
-        
-        
-        return collectionView
-    }()
+            let tv = UITableView(frame: .zero, style: .plain)
+            tv.dataSource = self
+            tv.delegate = self
+            tv.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+            tv.register(BannerTableViewCell.self, forCellReuseIdentifier: BannerTableViewCell.identifier)
+            tv.separatorStyle = .none
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            return tv
+        }()
     
     private let titlee: UILabel = {
        let label = UILabel()
@@ -62,49 +60,25 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        for _ in 0...25 {
-            images.append(UIImage(named: "1")!)
-            images.append(UIImage(named: "2")!)
-            images.append(UIImage(named: "3")!)
-            images.append(UIImage(named: "4")!)
-            images.append(UIImage(named: "5")!)
-        }
-        
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
-        collectionView.register(
-            CustomCollectionHeaderView.self,
-            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-            withReuseIdentifier: CustomCollectionHeaderView.identifier
-        )
     }
     
     private func setupUI() {
         view.addSubview(stackView)
-        view.addSubview(collectionView)
+        view.addSubview(tableView)
         view.backgroundColor = .white
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: -20),
+            stackView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: -20),
             stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            
-            collectionView.topAnchor.constraint(equalTo: stackView.bottomAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor) 
         ])
     }
     
@@ -146,64 +120,55 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.images.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCollectionViewCell.identifier, for: indexPath)
-                as? CustomCollectionViewCell else {
-            fatalError("failed to dequeue cell")
-        }
-        let image = images[indexPath.row]
-        cell.configure(image: image)
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row)
-    }
-}
-
-extension ViewController: UICollectionViewDelegateFlowLayout{
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = (self.view.frame.width / 3) - 1.34
-        return CGSize(width: size, height: size)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 2
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return  2
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader else {
-                return UICollectionReusableView()
-            }
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: CustomCollectionHeaderView.identifier, for: indexPath) as! CustomCollectionHeaderView
-        header.configure(title: "Header Title", subtitle: "subtitle")
-        return header
-
-    }
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 60)
-    }
-}
-
 extension ViewController: UITableViewDelegate, UITableViewDataSource{
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        switch sections[section] {
+        case .banner: return 1
+        case .grids:   return images.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        <#code#>
+        switch sections[indexPath.section] {
+        case .banner:
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: BannerTableViewCell.identifier,
+                for: indexPath
+            ) as! BannerTableViewCell
+            cell.configure(images: [
+                UIImage(named: "b1")!,
+                UIImage(named: "b2")!,
+                UIImage(named: "b3")!,
+            ])
+            return cell
+            
+        case .grids:
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: CollectionTableViewCell.identifier,
+                for: indexPath
+            ) as! CollectionTableViewCell
+            cell.items = images[indexPath.row]
+            return cell
+        }
     }
-    
-    
+        
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch sections[indexPath.section] {
+        case .banner: return 220 + 4 + 24
+        case .grids:   return UITableView.automaticDimension
+        }
+    }
+        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+            return "Section \(section + 1)"
+        }
+}
+
+
+enum Sections{
+    case banner
+    case grids
 }
