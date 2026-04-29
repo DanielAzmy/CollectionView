@@ -21,6 +21,13 @@ class ViewController: UIViewController {
         stack.alignment = .center
         return stack
     }()
+    
+    private lazy var tableView: UITableView = {
+       let tv = UITableView()
+        tv.dataSource = self
+        tv.delegate = self
+        return tv
+    }()
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -82,6 +89,12 @@ class ViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             stackView.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: -20),
@@ -183,6 +196,14 @@ extension ViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-
-
-
+extension ViewController: UITableViewDelegate, UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        <#code#>
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        <#code#>
+    }
+    
+    
+}
