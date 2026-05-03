@@ -28,15 +28,15 @@ class ViewController: UIViewController {
     }()
     
     private lazy var tableView: UITableView = {
-            let tv = UITableView(frame: .zero, style: .plain)
-            tv.dataSource = self
-            tv.delegate = self
-            tv.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
-            tv.register(BannerTableViewCell.self, forCellReuseIdentifier: BannerTableViewCell.identifier)
-            tv.separatorStyle = .none
-            tv.translatesAutoresizingMaskIntoConstraints = false
-            return tv
-        }()
+        let tv = UITableView(frame: .zero, style: .plain)
+        tv.dataSource = self
+        tv.delegate = self
+        tv.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
+        tv.register(BannerTableViewCell.self, forCellReuseIdentifier: BannerTableViewCell.identifier)
+        tv.separatorStyle = .none
+        tv.translatesAutoresizingMaskIntoConstraints = false
+        return tv
+    }()
     
     private let titlee: UILabel = {
        let label = UILabel()
@@ -84,7 +84,6 @@ class ViewController: UIViewController {
     
     private func makeLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { _, _ in
-            // Item
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1/3),
                 heightDimension: .fractionalWidth(1/3)
@@ -152,6 +151,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
                 for: indexPath
             ) as! CollectionTableViewCell
             cell.items = images[indexPath.row]
+            cell.delegate = self
             return cell
         }
     }
@@ -165,6 +165,13 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
             return "Section \(section + 1)"
         }
+}
+
+extension ViewController: GridCollectionViewDelegate{
+    func itemDidSelected(for index: Int) {
+        let vc = DetailsViewController(image: String(index + 1), title: "details of image \(String(index + 1))")
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 
