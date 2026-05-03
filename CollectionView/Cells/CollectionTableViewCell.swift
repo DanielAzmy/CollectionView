@@ -7,6 +7,9 @@
 
 import UIKit
 
+protocol GridCollectionViewDelegate: AnyObject{
+    func itemDidSelected(for index: Int)
+}
 
 class CollectionTableViewCell: UITableViewCell {
     static let identifier = "CollectionTableViewCell"
@@ -14,6 +17,8 @@ class CollectionTableViewCell: UITableViewCell {
     var items: [UIImage] = [] {
         didSet { collectionView.reloadData() }
     }
+    
+    weak var delegate: GridCollectionViewDelegate?
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: makeLayout())
@@ -25,6 +30,8 @@ class CollectionTableViewCell: UITableViewCell {
         cv.selectionFollowsFocus = false
         cv.dataSource = self
         cv.delegate = self
+        cv.hoverStyle = .none
+        cv.indicatorStyle = .default
         return cv
     }()
     
@@ -83,4 +90,9 @@ extension CollectionTableViewCell: UICollectionViewDataSource, UICollectionViewD
         cell.configure(image: items[indexPath.item])
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.itemDidSelected(for: indexPath.row)
+    }
 }
+
