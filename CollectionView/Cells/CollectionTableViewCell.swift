@@ -22,7 +22,7 @@ class CollectionTableViewCell: UITableViewCell {
     
     private lazy var collectionView: UICollectionView = {
         let cv = UICollectionView(frame: .zero, collectionViewLayout: makeLayout())
-        cv.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: CustomCollectionViewCell.identifier)
+        cv.register(CustomCollectionViewCell.self, forCellWithReuseIdentifier: CustomCollectionViewCell.className)
         cv.isScrollEnabled = false
         cv.backgroundColor = .clear
         cv.showsHorizontalScrollIndicator = false
@@ -38,6 +38,7 @@ class CollectionTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -46,6 +47,9 @@ class CollectionTableViewCell: UITableViewCell {
     
     private func setupUI() {
         contentView.addSubview(collectionView)
+    }
+    
+    private func setupConstraints(){
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
@@ -54,6 +58,8 @@ class CollectionTableViewCell: UITableViewCell {
             collectionView.heightAnchor.constraint(equalToConstant: 132)
         ])
     }
+    
+    
     private func makeLayout() -> UICollectionViewCompositionalLayout {
         return UICollectionViewCompositionalLayout { _, _ in
             let itemSize = NSCollectionLayoutSize(
@@ -84,7 +90,7 @@ extension CollectionTableViewCell: UICollectionViewDataSource, UICollectionViewD
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: CustomCollectionViewCell.identifier,
+            withReuseIdentifier: CustomCollectionViewCell.className,
             for: indexPath
         ) as! CustomCollectionViewCell
         cell.configure(image: items[indexPath.item])
@@ -96,3 +102,13 @@ extension CollectionTableViewCell: UICollectionViewDataSource, UICollectionViewD
     }
 }
 
+
+extension NSObject {
+    public var className: String {
+        return type(of: self).className
+    }
+
+    public static var className: String {
+        return String(describing: self)
+    }
+}

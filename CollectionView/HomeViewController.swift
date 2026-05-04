@@ -7,15 +7,15 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class HomeViewController: UIViewController {
     
     // MARK: - Variables
     private let sections: [Sections] = [.banner, .grids]
     private var images: [[UIImage]] = [
-           [UIImage(named: "1")!, UIImage(named: "2")!, UIImage(named: "3")!],
-           [UIImage(named: "4")!, UIImage(named: "5")!, UIImage(named: "1")!],
-           [UIImage(named: "2")!, UIImage(named: "3")!, UIImage(named: "4")!],
-       ]
+        ["1", "2", "3"].compactMap { UIImage(named: $0) },
+        ["4", "5", "1"].compactMap { UIImage(named: $0) },
+        ["2", "3", "4"].compactMap { UIImage(named: $0) },
+    ]
 
     // MARK: - UI components
     private lazy var stackView: UIStackView = {
@@ -31,8 +31,8 @@ class ViewController: UIViewController {
         let tv = UITableView(frame: .zero, style: .plain)
         tv.dataSource = self
         tv.delegate = self
-        tv.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.identifier)
-        tv.register(BannerTableViewCell.self, forCellReuseIdentifier: BannerTableViewCell.identifier)
+        tv.register(CollectionTableViewCell.self, forCellReuseIdentifier: CollectionTableViewCell.className)
+        tv.register(HomeHeaderViewCell.self, forCellReuseIdentifier: HomeHeaderViewCell.className)
         tv.separatorStyle = .none
         tv.translatesAutoresizingMaskIntoConstraints = false
         return tv
@@ -119,7 +119,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDelegate, UITableViewDataSource{
+extension HomeViewController: UITableViewDelegate, UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -135,19 +135,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         switch sections[indexPath.section] {
         case .banner:
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: BannerTableViewCell.identifier,
+                withIdentifier: HomeHeaderViewCell.className,
                 for: indexPath
-            ) as! BannerTableViewCell
-            cell.configure(images: [
-                UIImage(named: "b1")!,
-                UIImage(named: "b2")!,
-                UIImage(named: "b3")!,
-            ])
+            ) as! HomeHeaderViewCell
+            cell.configure(images: ["b1", "b2", "b3"])
             return cell
             
         case .grids:
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: CollectionTableViewCell.identifier,
+                withIdentifier: CollectionTableViewCell.className,
                 for: indexPath
             ) as! CollectionTableViewCell
             cell.items = images[indexPath.row]
@@ -159,7 +155,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch sections[indexPath.section] {
         case .banner: return 220 + 4 + 24
-        case .grids:   return UITableView.automaticDimension
+        case .grids: return UITableView.automaticDimension
         }
     }
         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -167,9 +163,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
         }
 }
 
-extension ViewController: GridCollectionViewDelegate{
+extension HomeViewController: GridCollectionViewDelegate{
     func itemDidSelected(for index: Int) {
-        let vc = DetailsViewController(image: String(index + 1), title: "details of image \(String(index + 1))")
+        let vc = DetailsViewController(image: String(index + 1), title: "details of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of imagedetails of image \(String(index + 1))")
         navigationController?.pushViewController(vc, animated: true)
     }
 }
