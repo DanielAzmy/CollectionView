@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BannerCell: UICollectionViewCell {
+class HomeHeaderBannerCell: UICollectionViewCell {
     static let identifier = "BannerCell"
     
     private let imageView: UIImageView = {
@@ -21,10 +21,14 @@ class BannerCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.addSubview(imageView)
+        setupSubViews()
         setupConstrains()
     }
-    required init?(coder: NSCoder) { fatalError() }
+    required init?(coder: NSCoder) { fatalError("view controller has not been implemented") }
+    
+    private func setupSubViews(){
+        contentView.addSubview(imageView)
+    }
     
     private func setupConstrains(){
         NSLayoutConstraint.activate([
@@ -35,7 +39,7 @@ class BannerCell: UICollectionViewCell {
         ])
     }
     
-    func configure(image: UIImage) {
-        imageView.image = image
+    func configure(image: String) {
+        imageView.image = UIImage(named: image)
     }
 }

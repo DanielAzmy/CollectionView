@@ -14,6 +14,12 @@ class DetailsViewController: UIViewController {
     var text: String
     
     //MARK: - UI components
+    private lazy var scrollView: UIScrollView = {
+       let sv = UIScrollView()
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        return sv
+    }()
+    
     private var detailsImage: UIImageView = {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
@@ -27,6 +33,7 @@ class DetailsViewController: UIViewController {
         label.textAlignment = .center
         label.numberOfLines = 1
         label.textColor = .black
+        label.backgroundColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -41,6 +48,7 @@ class DetailsViewController: UIViewController {
        let sv = UIStackView(arrangedSubviews: [detailsImage, titleLabel, emptyView])
         sv.axis = .vertical
         sv.distribution = .equalSpacing
+        sv.spacing = 12
         return sv
     }()
     
@@ -62,27 +70,34 @@ class DetailsViewController: UIViewController {
     }
     
     private func setupViews(){
-        detailsStack.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(detailsStack)
+        view.addSubview(scrollView)
+        scrollView.addSubview(detailsStack)
+        
         view.backgroundColor = .white
         detailsImage.image = UIImage(named: image)
+        
         titleLabel.text = text
     }
     
     private func setupNavigationBar(){
-        title = text
+        title = "Image details"
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
-    private func setupConstraints(){
+    private func setupConstraints() {
         NSLayoutConstraint.activate([
-            detailsStack.topAnchor.constraint(equalTo: view.topAnchor),
-            detailsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            detailsStack.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            detailsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             
-            detailsImage.widthAnchor.constraint(equalTo: detailsStack.widthAnchor),
+            detailsStack.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            detailsStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            detailsStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 12),
+            detailsStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 12),
+            detailsStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            emptyView.heightAnchor.constraint(equalToConstant: 450)
+            detailsImage.heightAnchor.constraint(equalTo: detailsImage.widthAnchor),
         ])
     }
 

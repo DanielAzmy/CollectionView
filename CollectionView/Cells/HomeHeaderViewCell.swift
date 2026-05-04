@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BannerTableViewCell: UITableViewCell {
+class HomeHeaderViewCell: UITableViewCell {
     static let identifier = "BannerTableViewCell"
     
     private let bannerView: BannerView = {
@@ -20,9 +20,15 @@ class BannerTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        selectionStyle = .none
-        backgroundColor = .clear
-        contentView.addSubview(bannerView)
+        setupViews()
+        setupConstraints()
+        setupAppearance()
+        
+    }
+    
+    required init?(coder: NSCoder) { fatalError() }
+    
+    private func setupConstraints(){
         NSLayoutConstraint.activate([
             bannerView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -30,10 +36,15 @@ class BannerTableViewCell: UITableViewCell {
             bannerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
     }
+    private func setupViews(){
+        contentView.addSubview(bannerView)
+    }
+    private func setupAppearance(){
+        selectionStyle = .none
+        backgroundColor = .clear
+    }
     
-    required init?(coder: NSCoder) { fatalError() }
-    
-    func configure(images: [UIImage]) {
+    func configure(images: [String]) {
         bannerView.configure(images: images)
     }
 }
